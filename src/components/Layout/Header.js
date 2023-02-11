@@ -8,7 +8,6 @@ export default function Header(props) {
         <>
             <header className={headerStyles.header}>
                 <h1>ReactMeals</h1>
-                {/* <button>Cart</button> */}
                 <HeaderCartButton />
             </header>
             <div className={headerStyles['main-image']}>
