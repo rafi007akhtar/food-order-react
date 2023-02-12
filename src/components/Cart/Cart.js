@@ -8,11 +8,13 @@ export default function Cart(props) {
   const cartCtx = useContext(CartContext);
   const cartItems = cartCtx.items.map((item) => (
     <CartItem
+      key={item.id}
       id={item.id}
       name={item.name}
       amount={item.amount}
       price={item.price}
       onAdd={() => cartCtx.addItem({...item, amount: 1})}
+      onRemove={() => cartCtx.removeItem(item.id)}
     >
       {item.name}
     </CartItem>

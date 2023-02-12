@@ -7,11 +7,15 @@ const defaultCartState = {
 };
 
 function cartReducer(state, action) {
-  let newItem = action.item;
   let updatedItems;
+  let existingItemInd;
+  let updatedTotalAmount
   switch (action.type) {
     case "ADD":
-      const existingItemInd = state.items.findIndex(
+      let newItem = action.item;
+      updatedTotalAmount =
+        state.totalAmount + newItem.price * newItem.amount;
+      existingItemInd = state.items.findIndex(
         (item) => item.id === newItem.id
       );
       if (existingItemInd !== -1) {
@@ -24,9 +28,29 @@ function cartReducer(state, action) {
       } else {
         updatedItems = [...state.items, newItem];
       }
-      const updatedTotalAmount =
-        state.totalAmount + newItem.price * newItem.amount;
       return { ...state, items: updatedItems, totalAmount: updatedTotalAmount };
+
+    case "REMOVE":
+      existingItemInd = state.items.findIndex(
+        (item) => item.id === action.itemId
+      );
+      if (existingItemInd === -1) return;
+
+      const itemToRemove = state.items[existingItemInd];
+      updatedTotalAmount = state.totalAmount - itemToRemove.price;
+      if (itemToRemove.amount > 1) {
+        // decrease count by 1
+        const updatedItem = {...itemToRemove, amount: itemToRemove.amount - 1};
+        updatedItems = [...state.items];
+        updatedItems[existingItemInd] = updatedItem;
+      } else {
+        // remove this from the cart
+        updatedItems = state.items.filter(item => item.id !== action.itemId);
+      }
+      return {
+        items: updatedItems,
+        totalAmount: updatedTotalAmount
+      };
 
     default:
       return defaultCartState;
