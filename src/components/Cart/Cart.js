@@ -11,14 +11,14 @@ export default function Cart(props) {
     },
   ].map((item) => <li key={item.id}>{item.name}</li>);
   return (
-    <Modal>
+    <Modal closeModal={props.closeCart}>
       <ul className={cartStyles["cart-items"]}> {cartItems} </ul>
       <div className={cartStyles.total}>
         <span>Total Amount</span>
         <span>35.62</span>
       </div>
       <div className={cartStyles.actions}>
-        <button className={cartStyles['button--alt']}>Close</button>
+        <button onClick={props.closeCart} className={cartStyles['button--alt']}>Close</button>
         <button className={cartStyles.button}>Order</button>
       </div>
     </Modal>
