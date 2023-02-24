@@ -38,37 +38,37 @@ export default function AvailableMeals() {
     const mealsUrl = `${appConstants.BASE_URL}${appConstants.MEALS_EXTENSION}`;
     const response = await fetch(mealsUrl);
     const mealsObj = await response.json();
-    const meals = [];
-    Object.keys(mealsObj).forEach(key => {
-      const meal = {...mealsObj[key], id: key}
-      meals.push(meal);
+    const mealsJSX = [];
+    Object.keys(mealsObj).forEach((key) => {
+      const item = { ...mealsObj[key], id: key };
+      const mealJSX = (
+        <MealItem
+          key={item.id}
+          description={item.description}
+          price={item.price}
+          id={item.id}
+          name={item.name}
+        >
+          {item.name}
+        </MealItem>
+      );
+      mealsJSX.push(mealJSX);
     });
-    const mealsJSX = meals.map((item) => (
-      <MealItem
-        key={item.id}
-        description={item.description}
-        price={item.price}
-        id={item.id}
-        name={item.name}
-      >
-        {item.name}
-      </MealItem>
-    ));
     setMealItems(mealsJSX);
   }, []);
 
   useEffect(() => {
     fetchAllMeals();
-  }, [fetchAllMeals])
+  }, [fetchAllMeals]);
 
   return (
     <section className={availableMealsStyles.meals}>
-      { mealItems && <Card>
-        <ul>{mealItems}</ul>
-      </Card>
-      }
-      { !mealItems && <p>Loading the meals...</p> }
-      
+      {mealItems && (
+        <Card>
+          <ul>{mealItems}</ul>
+        </Card>
+      )}
+      {!mealItems && <p>Loading the meals...</p>}
     </section>
   );
 }
