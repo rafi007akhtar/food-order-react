@@ -3,6 +3,7 @@ import Card from "../UI/Card";
 import MealItem from "./MealItem/MealItem";
 import appConstants from "../../store/constants";
 import { useCallback, useEffect, useState } from "react";
+import useHttp from "../../hooks/use-http";
 
 // const DUMMY_MEALS = [
 //   {
@@ -34,32 +35,35 @@ import { useCallback, useEffect, useState } from "react";
 export default function AvailableMeals() {
   const [mealItems, setMealItems] = useState();
 
-  const fetchAllMeals = useCallback(async () => {
-    const mealsUrl = `${appConstants.BASE_URL}${appConstants.MEALS_EXTENSION}`;
-    const response = await fetch(mealsUrl);
-    const mealsObj = await response.json();
-    const mealsJSX = [];
-    Object.keys(mealsObj).forEach((key) => {
-      const item = { ...mealsObj[key], id: key };
-      const mealJSX = (
-        <MealItem
-          key={item.id}
-          description={item.description}
-          price={item.price}
-          id={item.id}
-          name={item.name}
-        >
-          {item.name}
-        </MealItem>
-      );
-      mealsJSX.push(mealJSX);
-    });
-    setMealItems(mealsJSX);
-  }, []);
+  const [mealsObj, error, isLoading] = useHttp(
+    `${appConstants.BASE_URL}${appConstants.MEALS_EXTENSION}`
+  );
+
+  const generateMealItems = useCallback(() => {
+    if (mealsObj) {
+      const mealsJSX = [];
+      Object.keys(mealsObj).forEach((key) => {
+        const item = { ...mealsObj[key], id: key };
+        const mealJSX = (
+          <MealItem
+            key={item.id}
+            description={item.description}
+            price={item.price}
+            id={item.id}
+            name={item.name}
+          >
+            {item.name}
+          </MealItem>
+        );
+        mealsJSX.push(mealJSX);
+      });
+      setMealItems(mealsJSX);
+    }
+  }, [mealsObj]);
 
   useEffect(() => {
-    fetchAllMeals();
-  }, [fetchAllMeals]);
+    generateMealItems();
+  }, [generateMealItems])
 
   return (
     <section className={availableMealsStyles.meals}>
@@ -68,7 +72,7 @@ export default function AvailableMeals() {
           <ul>{mealItems}</ul>
         </Card>
       )}
-      {!mealItems && <p>Loading the meals...</p>}
+      {isLoading && <p>Loading the meals...</p>}
     </section>
   );
 }
