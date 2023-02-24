@@ -4,7 +4,8 @@ const originalContextObj = {
     items: [],
     totalAmount: 0,
     addItem: (item) => {},
-    removeItem: (itemId) => {}
+    removeItem: (itemId) => {},
+    clearCart: () => {}
 }
 
 const CartContext = React.createContext({...originalContextObj});

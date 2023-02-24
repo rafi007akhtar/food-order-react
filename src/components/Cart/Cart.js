@@ -12,6 +12,7 @@ export default function Cart(props) {
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
   const [isOrderPlaced, err, isLoading, orderPlacer] = useHttp(
     `${appConstants.BASE_URL}${appConstants.ORDERS_EXTENSION}`,
+    cartCtx.clearCart
   );
 
   function orderHandler(e) {
