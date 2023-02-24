@@ -7,8 +7,7 @@ const typicalPostOptions = {
   },
 };
 
-export default function useHttp(url, options = undefined) {
-  debugger;
+export default function useHttp(url, options = undefined, onCompletion) {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,11 +17,11 @@ export default function useHttp(url, options = undefined) {
       ...typicalPostOptions,
       ...options,
       body: JSON.stringify(options.body),
-    };
+    }
   }
   console.log("options:", options);
 
-  const fetchResponse = useCallback(async () => {
+  const fetchFn = useCallback(async () => {
     try {
       setIsLoading(true);
       const res = await fetch(url, options);
@@ -38,9 +37,9 @@ export default function useHttp(url, options = undefined) {
     }
   }, [url, options]);
 
-  useEffect(() => {
-    fetchResponse();
-  }, [fetchResponse]);
+  if (response && onCompletion) {
+    onCompletion();
+  }
 
-  return [response, error, isLoading];
+  return [response, error, isLoading, fetchFn];
 }

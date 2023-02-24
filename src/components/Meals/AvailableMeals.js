@@ -5,37 +5,10 @@ import appConstants from "../../store/constants";
 import { useCallback, useEffect, useState } from "react";
 import useHttp from "../../hooks/use-http";
 
-// const DUMMY_MEALS = [
-//   {
-//     id: "m1",
-//     name: "Sushi",
-//     description: "Finest fish and veggies",
-//     price: 20,
-//   },
-//   {
-//     id: "m2",
-//     name: "Schnitzel",
-//     description: "A german specialty!",
-//     price: 16.5,
-//   },
-//   {
-//     id: "m3",
-//     name: "Barbecue Burger",
-//     description: "American, raw, meaty",
-//     price: 12.99,
-//   },
-//   {
-//     id: "m4",
-//     name: "Green Bowl",
-//     description: "Healthy...and green...",
-//     price: 18.99,
-//   },
-// ];
-
 export default function AvailableMeals() {
   const [mealItems, setMealItems] = useState();
 
-  const [mealsObj, error, isLoading] = useHttp(
+  const [mealsObj, error, isLoading, fetchMeals] = useHttp(
     `${appConstants.BASE_URL}${appConstants.MEALS_EXTENSION}`
   );
 
@@ -62,8 +35,12 @@ export default function AvailableMeals() {
   }, [mealsObj]);
 
   useEffect(() => {
-    generateMealItems();
-  }, [generateMealItems])
+    fetchMeals();
+  }, [fetchMeals]);
+
+  useEffect(() => {
+    generateMealItems()
+  }, [generateMealItems]);
 
   return (
     <section className={availableMealsStyles.meals}>
