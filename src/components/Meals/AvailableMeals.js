@@ -4,6 +4,7 @@ import MealItem from "./MealItem/MealItem";
 import appConstants from "../../store/constants";
 import { useCallback, useEffect, useState } from "react";
 import useHttp from "../../hooks/use-http";
+import Loading from "../UI/Loading";
 
 export default function AvailableMeals() {
   const [mealItems, setMealItems] = useState();
@@ -49,7 +50,7 @@ export default function AvailableMeals() {
           <ul>{mealItems}</ul>
         </Card>
       )}
-      {isLoading && <p>Loading the meals...</p>}
+      {isLoading && <Loading>Loading the meals...</Loading> }
     </section>
   );
 }
