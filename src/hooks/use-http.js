@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 const typicalPostOptions = {
   method: "POST",
@@ -33,7 +33,8 @@ export default function useHttp(url, options = undefined, onCompletion) {
       setResponse(resJSON);
       setIsLoading(false);
     } catch (err) {
-      setError(err);
+      setIsLoading(false);
+      setError(err.message);
     }
   }, [url, options]);
 

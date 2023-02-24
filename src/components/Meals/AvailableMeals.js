@@ -5,6 +5,7 @@ import appConstants from "../../store/constants";
 import { useCallback, useEffect, useState } from "react";
 import useHttp from "../../hooks/use-http";
 import Loading from "../UI/Loading";
+import Error from "../UI/Error";
 
 export default function AvailableMeals() {
   const [mealItems, setMealItems] = useState();
@@ -51,6 +52,7 @@ export default function AvailableMeals() {
         </Card>
       )}
       {isLoading && <Loading>Loading the meals...</Loading> }
+      {error && <Error>Error! Something went wrong.</Error>}
     </section>
   );
 }
