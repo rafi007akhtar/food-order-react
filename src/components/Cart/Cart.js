@@ -9,8 +9,10 @@ import Checkout from "./Checkout";
 
 export default function Cart(props) {
   const cartCtx = useContext(CartContext);
-  // const [orders, setOrders] = useState(0);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  const [isOrderPlaced, err, isLoading, orderPlacer] = useHttp(
+    `${appConstants.BASE_URL}${appConstants.ORDERS_EXTENSION}`,
+  );
 
   function orderHandler(e) {
     e.preventDefault();
@@ -50,15 +52,38 @@ export default function Cart(props) {
     </div>
   );
 
-  return (
-    <Modal closeModal={props.closeCart}>
+  const modalContent = (
+    <div>
       <ul className={cartStyles["cart-items"]}> {cartItems} </ul>
       <div className={cartStyles.total}>
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
       {modalFooter}
-      {showCheckoutForm && <Checkout onCancel={props.closeCart} cartItems={cartCtx.items} />}
+      {showCheckoutForm && <Checkout
+        onCancel={props.closeCart}
+        cartItems={cartCtx.items}
+        onCheckout={checkoutHandler}
+      />}
+    </div>
+  );
+
+  function checkoutHandler(userData) {
+    orderPlacer({
+      method: "POST",
+      body: {
+        orderedItems: cartCtx.items,
+        user: userData,
+      },
+    });
+  }
+
+  return (
+    <Modal closeModal={props.closeCart}>
+      {!isLoading && !isOrderPlaced && modalContent}
+      {isLoading && <p>Placing your order...</p>}
+      {isOrderPlaced && <p>Order placed!</p>}
+      {err && <p>Oops, something went wrong.</p>}
     </Modal>
   );
 }

@@ -4,9 +4,6 @@ import useHttp from "../../hooks/use-http";
 import { useRef, useState } from "react";
 
 export default function Checkout(props) {
-  const [isOrderPlaced, err, isLoading, orderPlacer] = useHttp(
-    `${appConstants.BASE_URL}${appConstants.ORDERS_EXTENSION}`
-  );
   const [formControlsValidity, setFormControlsValidity] = useState({
     name: true,
     street: true,
@@ -53,17 +50,11 @@ export default function Checkout(props) {
         postal: postal.current.value,
         city: city.current.value,
       };
-      orderPlacer({
-        method: "POST",
-        body: {
-            orderedItems: props.cartItems,
-            user: userData
-        },
-      });
+      props.onCheckout(userData);
     } else console.log("form is invalid");
   }
 
-  return (
+  const form = (
     <form className={styles.form} onSubmit={onSubmitHanlder}>
       <div
         className={`${styles.control} ${
@@ -109,10 +100,12 @@ export default function Checkout(props) {
           Confirm order
         </button>
       </div>
-
-      {isLoading && <p>Placing your order...</p>}
-      {isOrderPlaced && <p>Order placed!</p>}
-      {err && <p>Oops, something went wrong.</p>}
     </form>
+  );
+
+  return (
+    <>
+      {form}
+    </>
   );
 }
